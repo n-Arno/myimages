@@ -7,7 +7,7 @@ app = bottle.Bottle()
 
 @app.route("/")
 def root():
-    base = f"Hello! This is the frontend image. I'm <b>{socket.gethostname()}</b><br/><br/>"
+    base = f"Hello! This is the frontend image. My name is <b>{socket.gethostname()}</b><br/><br/>"
     try:
         r = requests.get("http://back")
         if r.status_code == requests.codes.ok:
@@ -15,6 +15,6 @@ def root():
         else:
             raise Exception("Got an error from http://back")
     except:
-        return base + "I didn't heard from <u>http://back</u> (yet)"
+        return base + "I didn't hear from <u>http://back</u> (yet)"
 
 app.run(host="0.0.0.0", port=80, server="paste")

@@ -7,9 +7,9 @@ app = bottle.Bottle()
 
 @app.route("/")
 def root():
-    base = f"Hello! This is the backend image. I'm <b>{socket.gethostname()}</b><br/><br/>"
+    base = f"Hello! This is the backend image. My name is <b>{socket.gethostname()}</b><br/><br/>"
     if os.path.exists('/data/'):
-        return base + "I found a something mounted as /data!"
+        return base + "I found something mounted as /data!"
     else:
         return base + "Nothing is mounted as /data :-("
 
