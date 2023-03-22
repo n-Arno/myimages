@@ -1,0 +1,88 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: front
+  name: front
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+        - image: ghcr.io/n-arno/front:latest
+          imagePullPolicy: Always
+          name: front
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: front
+  name: front
+  namespace: default
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: front
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myvolume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: back
+  name: back
+spec:
+  volumes:
+    - name: myvolume
+      persistentVolumeClaim:
+        claimName: myvolume
+  containers:
+    - image: ghcr.io/n-arno/back:latest
+      imagePullPolicy: Always
+      name: back
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - mountPath: "/data"
+          name: myvolume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: back
+  name: back
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    run: back
+

@@ -1,0 +1,23 @@
+volumes:
+  myvolume:
+
+networks:
+  mynet:
+    driver: bridge
+
+services:
+  front:
+    image: ghcr.io/n-arno/front:latest
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - mynet   
+
+  back:
+    image: ghcr.io/n-arno/back:latest
+    restart: always
+    volumes:
+      - myvolume:/data
+    networks:
+      - mynet
